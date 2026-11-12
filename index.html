@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Compendio de los Dragones</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dflip@1.0.0/css/dflip.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dflip@1.0.0/css/themify-icons.min.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #191714; color: #f3e8d3; font: 1rem system-ui, sans-serif; }
+    header, footer { padding: .75rem clamp(1rem, 4vw, 3rem); }
+    header { display: flex; align-items: center; justify-content: space-between; gap: .5rem 1.5rem; flex-wrap: wrap; }
+    h1 { font: 1.65rem Georgia, serif; margin: 0; }
+    a { color: #ebbf79; text-underline-offset: .18em; }
+    footer { font-size: .8rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Compendio de los Dragones</h1>
+    <a href="./compendio-de-los-dragones.pdf">Abrir PDF</a>
+  </header>
+  <main aria-label="Lector del compendio">
+    <div class="_df_book" height="80vh" webgl="true" backgroundcolor="#211d18"
+      source="./compendio-de-los-dragones.pdf"></div>
+    <noscript>Activa JavaScript para usar el visor o abre el PDF desde el enlace superior.</noscript>
+  </main>
+  <footer>Visor <a href="https://github.com/dearhive/dearflip-js-flipbook">DearFlip Lite</a>
+    de DearHive, bajo <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>.</footer>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dflip@1.0.0/js/dflip.min.js"></script>
+</body>
+</html>
+
