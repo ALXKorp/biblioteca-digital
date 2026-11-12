@@ -14,6 +14,10 @@
     h1 { font: 1.65rem Georgia, serif; margin: 0; }
     a { color: #ebbf79; text-underline-offset: .18em; }
     footer { font-size: .8rem; }
+    .notice { margin: 0; padding: .35rem clamp(1rem, 4vw, 3rem) .7rem; color: #dbcbb2; font-size: .875rem; }
+    .rights { margin-bottom: .75rem; line-height: 1.55; }
+    .rights summary { cursor: pointer; color: #ebbf79; }
+    .rights p { max-width: 75ch; }
   </style>
 </head>
 <body>
@@ -21,15 +25,22 @@
     <h1>Compendio de los Dragones</h1>
     <a href="./compendio-de-los-dragones.pdf">Abrir PDF</a>
   </header>
+  <p class="notice">Guía de fans no oficial sobre las obras de Rebecca Yarros · <a href="#aviso-editorial">Aviso editorial y derechos</a></p>
   <main aria-label="Lector del compendio">
     <div class="_df_book" height="80vh" webgl="true" backgroundcolor="#211d18"
       source="./compendio-de-los-dragones.pdf"></div>
     <noscript>Activa JavaScript para usar el visor o abre el PDF desde el enlace superior.</noscript>
   </main>
-  <footer>Visor <a href="https://github.com/dearhive/dearflip-js-flipbook">DearFlip Lite</a>
+  <footer>
+    <details class="rights" id="aviso-editorial" open>
+      <summary>Aviso editorial y derechos</summary>
+      <p>El <cite>Compendio de los Dragones</cite> es una guía independiente de aficionados, de acceso gratuito. El proyecto carece de afiliación, patrocinio o respaldo de Rebecca Yarros y de las editoriales de sus obras.</p>
+      <p>Los derechos sobre las obras originales y sus elementos protegidos pertenecen a sus respectivos titulares. Los títulos, nombres de personajes y referencias al universo literario se emplean para identificar las obras comentadas. Las fuentes del compendio figuran en su bibliografía.</p>
+      <p>Los titulares de derechos pueden consultar el <a href="https://docs.github.com/en/site-policy/content-removal-policies/dmca-takedown-policy">procedimiento de GitHub para avisos de infracción de derechos de autor</a>.</p>
+    </details>
+    Visor <a href="https://github.com/dearhive/dearflip-js-flipbook">DearFlip Lite</a>
     de DearHive, bajo <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>.</footer>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dflip@1.0.0/js/dflip.min.js"></script>
 </body>
 </html>
-
