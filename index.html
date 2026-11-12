@@ -10,45 +10,97 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dflip@1.0.0/css/dflip.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dflip@1.0.0/css/themify-icons.min.css">
   <style>
+    :root { color-scheme: dark; --ink: #f5ebd9; --muted: #cbbca5; --gold: #e8bf7e; --line: #4b3d2d; }
     * { box-sizing: border-box; }
-    body { margin: 0; background: #191714; color: #f3e8d3; font: 1rem system-ui, sans-serif; }
-    header, footer { padding: .75rem clamp(1rem, 4vw, 3rem); }
-    header { display: flex; align-items: center; justify-content: space-between; gap: .5rem 1.5rem; flex-wrap: wrap; }
-    h1 { font: 1.65rem Georgia, serif; margin: 0; }
-    a { color: #ebbf79; text-underline-offset: .18em; }
-    footer { font-size: .8rem; }
-    #download-pdf { font: inherit; color: #ebbf79; background: transparent; border: 0; text-decoration: underline; cursor: pointer; }
-    .notice { margin: 0; padding: .35rem clamp(1rem, 4vw, 3rem) .7rem; color: #dbcbb2; font-size: .875rem; }
-    .rights { margin-bottom: .75rem; line-height: 1.55; }
-    .rights summary { cursor: pointer; color: #ebbf79; }
-    .rights p { max-width: 75ch; }
+    body { margin: 0; background: #151310; color: var(--ink); font: 1rem system-ui, sans-serif; }
+    a { color: var(--gold); text-underline-offset: .2em; }
+    button, summary { font: inherit; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: .6rem; min-height: 52px; padding: .35rem clamp(.55rem, 2vw, 1.3rem); border-bottom: 1px solid var(--line); background: #201b16; position: relative; z-index: 20; }
+    h1 { margin: 0; font: 500 clamp(.95rem, 2.5vw, 1.5rem) Georgia, serif; }
+    .tools { display: flex; align-items: center; gap: .4rem; flex: 0 0 auto; }
+    .control { color: var(--ink); background: #2e261d; border: 1px solid var(--line); border-radius: .45rem; padding: .4rem .65rem; cursor: pointer; font-size: .875rem; white-space: nowrap; }
+    .control:hover, .control:focus-visible { border-color: var(--gold); }
+    .control:disabled { opacity: .55; cursor: wait; }
+    .menu { position: relative; }
+    .menu > summary { list-style: none; }
+    .menu > summary::-webkit-details-marker { display: none; }
+    .menu > summary::after { content: ' ▾'; color: var(--gold); }
+    .menu[open] > summary::after { content: ' ▴'; }
+    .panel { position: absolute; top: calc(100% + .5rem); right: 0; width: min(26rem, calc(100vw - 1.1rem)); max-height: calc(100dvh - 65px); overflow: auto; background: #241e18; border: 1px solid var(--line); border-radius: .65rem; padding: .85rem; box-shadow: 0 12px 32px #0008; }
+    .panel button { display: block; width: 100%; text-align: left; }
+    .panel button + button { margin-top: .4rem; }
+    .rights { margin-top: .75rem; padding-top: .65rem; border-top: 1px solid var(--line); line-height: 1.5; font-size: .875rem; }
+    .rights summary { cursor: pointer; color: var(--gold); }
+    .rights p, .credit { color: var(--muted); }
+    .credit, #pdf-status { font-size: .8rem; }
+    #pdf-status:empty { display: none; }
     main { position: relative; }
     main:has(#df_book_page_number) .loading-info { display: none; }
     #page-status { position: absolute; z-index: 9; top: .6rem; left: 50%; transform: translateX(-50%); margin: 0; padding: .4rem .75rem; border-radius: .25rem; background: #191714; pointer-events: none; white-space: nowrap; }
   </style>
 </head>
 <body>
-  <header>
+  <header class="topbar">
     <h1>Compendio de los Dragones</h1>
-    <button id="download-pdf" type="button">Descargar PDF original</button><span id="pdf-status" role="status"></span>
-  </header>
-  <p class="notice">Guía de fans no oficial sobre las obras de Rebecca Yarros · <a href="#aviso-editorial">Aviso editorial y derechos</a></p>
-  <main aria-label="Lector del compendio">
-    <p id="page-status" role="status" hidden></p>
-    <div class="_df_book" id="compendio" height="80vh" webgl="true" backgroundcolor="#211d18"></div>
-    <noscript>Activa JavaScript para usar el visor o vuelve a cargar la página después de activarlo.</noscript>
-  </main>
-  <footer>
-    <details class="rights" id="aviso-editorial" open>
+    <div class="tools">
+      <button class="control" id="zoom-book" type="button" disabled>Ampliar</button>
+      <details class="menu" id="reader-menu">
+        <summary class="control">Menú</summary>
+        <div class="panel">
+          <button class="control" id="fullscreen-book" type="button" disabled>Pantalla completa</button>
+          <button class="control" id="download-pdf" type="button">Descargar PDF original</button>
+          <p id="pdf-status" role="status"></p>
+          <details class="rights" id="aviso-editorial">
       <summary>Aviso editorial y derechos</summary>
       <p>El <cite>Compendio de los Dragones</cite> es una guía independiente de aficionados, de acceso gratuito. El proyecto carece de afiliación, patrocinio o respaldo de Rebecca Yarros y de las editoriales de sus obras.</p>
       <p>Los derechos sobre las obras originales y sus elementos protegidos pertenecen a sus respectivos titulares. Los títulos, nombres de personajes y referencias al universo literario se emplean para identificar las obras comentadas. Las fuentes del compendio figuran en su bibliografía.</p>
       <p>Los titulares de derechos pueden consultar el <a href="https://docs.github.com/en/site-policy/content-removal-policies/dmca-takedown-policy">procedimiento de GitHub para avisos de infracción de derechos de autor</a>.</p>
     </details>
-    Visor <a href="https://github.com/dearhive/dearflip-js-flipbook">DearFlip Lite</a>
-    de DearHive, bajo <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>.
-  </footer>
+          <p class="credit">Visor <a href="https://github.com/dearhive/dearflip-js-flipbook">DearFlip Lite</a>
+    de DearHive, bajo <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a>.</p>
+        </div>
+      </details>
+    </div>
+  </header>
+  <main aria-label="Lector del compendio">
+    <p id="page-status" role="status" hidden></p>
+    <div class="_df_book" id="compendio" webgl="true" backgroundcolor="#191613"></div>
+    <noscript>Activa JavaScript para usar el visor y vuelve a cargar la página.</noscript>
+  </main>
   <script>
+    const book = document.querySelector('#compendio');
+    const menu = document.querySelector('#reader-menu');
+    const header = document.querySelector('.topbar');
+    const zoom = document.querySelector('#zoom-book');
+    const fullscreen = document.querySelector('#fullscreen-book');
+    const viewerHeight = () => Math.max(320, Math.floor(window.innerHeight - header.getBoundingClientRect().height));
+
+    function connectViewerControls() {
+      const zoomIn = book.querySelector('.df-ui-zoomin');
+      const full = book.querySelector('.df-ui-fullscreen');
+      if (!zoomIn || !full) return;
+      zoom.disabled = false;
+      fullscreen.disabled = false;
+      zoom.onclick = () => zoomIn.click();
+      fullscreen.onclick = () => {
+        menu.open = false;
+        full.click();
+      };
+      controlsObserver.disconnect();
+    }
+
+    const controlsObserver = new MutationObserver(connectViewerControls);
+    controlsObserver.observe(book, { childList: true, subtree: true });
+    document.addEventListener('click', event => {
+      if (menu.open && !menu.contains(event.target)) menu.open = false;
+    });
+    menu.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        menu.open = false;
+        menu.querySelector('summary').focus();
+      }
+    });
+
     const pdfButton = document.querySelector('#download-pdf');
     const pdfStatus = document.querySelector('#pdf-status');
     pdfButton.addEventListener('click', async () => {
@@ -129,6 +181,7 @@
 
     var option_compendio = {
       source: pages,
+      height: viewerHeight(),
       outline: [{"title": "Compendio", "dest": 1}, {"title": "Cómo leer el compendio", "dest": 2}, {"title": "Contenido", "dest": 3}, {"title": "Antes de la Trilla", "dest": 4}, {"title": "Tairn", "dest": 5}, {"title": "Andarna", "dest": 5}, {"title": "Andarna en la Trilla", "dest": 6}, {"title": "Sgaeyl", "dest": 6}, {"title": "Teine", "dest": 7}, {"title": "Marbh", "dest": 7}, {"title": "Cath", "dest": 8}, {"title": "Feirge", "dest": 8}, {"title": "Aotrom", "dest": 9}, {"title": "Sliseag", "dest": 9}, {"title": "Deigh", "dest": 10}, {"title": "Glane", "dest": 10}, {"title": "Chradh", "dest": 11}, {"title": "Cuir", "dest": 11}, {"title": "Thoirt", "dest": 12}, {"title": "Molvic", "dest": 12}, {"title": "Cruth", "dest": 13}, {"title": "Aimsir", "dest": 13}, {"title": "Codagh", "dest": 14}, {"title": "Baide", "dest": 14}, {"title": "Solas", "dest": 15}, {"title": "Breugan", "dest": 15}, {"title": "Claidh", "dest": 16}, {"title": "Fuil", "dest": 16}, {"title": "Dagolh", "dest": 17}, {"title": "Nuirlach", "dest": 17}, {"title": "Bregh", "dest": 18}, {"title": "Dasyn", "dest": 18}, {"title": "Leothan", "dest": 19}, {"title": "Dragones citados por su nombre", "dest": 20}, {"title": "Dragones sin nombre conocido", "dest": 21}, {"title": "Jinetes citados", "dest": 22}, {"title": "Índice de dragones", "dest": 23}, {"title": "Obras de Rebecca Yarros", "dest": 24}, {"title": "Guías de aficionados", "dest": 25}, {"title": "El día en que un dragón elige", "dest": 26}],
       showDownloadControl: false,
       maxTextureSize: 2400,
@@ -145,4 +198,5 @@
   <script src="https://cdn.jsdelivr.net/npm/dflip@1.0.0/js/dflip.min.js"></script>
 </body>
 </html>
+
 
