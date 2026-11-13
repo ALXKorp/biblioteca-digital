@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Compendio de los Dragones</title>
-  <link rel="preload" as="image" href="./compendio-eb7586cad1-01.webp">
-  <link rel="preload" as="image" href="./compendio-eb7586cad1-02.webp">
-  <link rel="preload" as="image" href="./compendio-eb7586cad1-03.webp">
+  <link rel="preload" as="image" href="./compendio-b3d7769d60-01.webp">
+  <link rel="preload" as="image" href="./compendio-b3d7769d60-02.webp">
+  <link rel="preload" as="image" href="./compendio-b3d7769d60-03.webp">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dflip@1.0.0/css/dflip.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dflip@1.0.0/css/themify-icons.min.css">
   <style>
@@ -107,12 +107,12 @@
       pdfButton.disabled = true;
       pdfStatus.textContent = 'Preparando PDF…';
       try {
-        const parts = await Promise.all([1, 2, 3, 4].map(async part => {
-          const response = await fetch('./compendio-eb7586cad1-pdf-parte-' + part + '.bin');
+        const parts = await Promise.all([1, 2, 3, 4, 5, 6].map(async part => {
+          const response = await fetch('./compendio-b3d7769d60-pdf-parte-' + part + '.bin');
           if (!response.ok) throw new Error('No se pudo descargar el PDF.');
           return response.arrayBuffer();
         }));
-        if (parts.reduce((size, part) => size + part.byteLength, 0) !== 25643074) throw new Error('Descarga incompleta.');
+        if (parts.reduce((size, part) => size + part.byteLength, 0) !== 33765548) throw new Error('Descarga incompleta.');
         const url = URL.createObjectURL(new Blob(parts, { type: 'application/pdf' }));
         const link = document.createElement('a');
         link.href = url;
@@ -127,8 +127,8 @@
       }
     });
 
-    const pages = Array.from({ length: 26 }, (_, i) =>
-      './compendio-eb7586cad1-' + String(i + 1).padStart(2, '0') + '.webp'
+    const pages = Array.from({ length: 25 }, (_, i) =>
+      './compendio-b3d7769d60-' + String(i + 1).padStart(2, '0') + '.webp'
     );
     const requests = new Map();
     const pageStatus = document.querySelector('#page-status');
@@ -182,7 +182,7 @@
     var option_compendio = {
       source: pages,
       height: viewerHeight(),
-      outline: [{"title": "Compendio", "dest": 1}, {"title": "Cómo leer el compendio", "dest": 2}, {"title": "Contenido", "dest": 3}, {"title": "Antes de la Trilla", "dest": 4}, {"title": "Tairn", "dest": 5}, {"title": "Andarna", "dest": 5}, {"title": "Andarna en la Trilla", "dest": 6}, {"title": "Sgaeyl", "dest": 6}, {"title": "Teine", "dest": 7}, {"title": "Marbh", "dest": 7}, {"title": "Cath", "dest": 8}, {"title": "Feirge", "dest": 8}, {"title": "Aotrom", "dest": 9}, {"title": "Sliseag", "dest": 9}, {"title": "Deigh", "dest": 10}, {"title": "Glane", "dest": 10}, {"title": "Chradh", "dest": 11}, {"title": "Cuir", "dest": 11}, {"title": "Thoirt", "dest": 12}, {"title": "Molvic", "dest": 12}, {"title": "Cruth", "dest": 13}, {"title": "Aimsir", "dest": 13}, {"title": "Codagh", "dest": 14}, {"title": "Baide", "dest": 14}, {"title": "Solas", "dest": 15}, {"title": "Breugan", "dest": 15}, {"title": "Claidh", "dest": 16}, {"title": "Fuil", "dest": 16}, {"title": "Dagolh", "dest": 17}, {"title": "Nuirlach", "dest": 17}, {"title": "Bregh", "dest": 18}, {"title": "Dasyn", "dest": 18}, {"title": "Leothan", "dest": 19}, {"title": "Dragones citados por su nombre", "dest": 20}, {"title": "Dragones sin nombre conocido", "dest": 21}, {"title": "Jinetes citados", "dest": 22}, {"title": "Índice de dragones", "dest": 23}, {"title": "Obras de Rebecca Yarros", "dest": 24}, {"title": "Guías de aficionados", "dest": 25}, {"title": "El día en que un dragón elige", "dest": 26}],
+      outline: [{"title": "Compendio", "dest": 1}, {"title": "Cómo leer el compendio", "dest": 2}, {"title": "Contenido", "dest": 3}, {"title": "Antes de la Trilla", "dest": 3}, {"title": "Dragones citados por su nombre", "dest": 3}, {"title": "Dragones sin nombre conocido", "dest": 3}, {"title": "Índice de dragones", "dest": 3}, {"title": "Tairn", "dest": 4}, {"title": "Andarna", "dest": 4}, {"title": "Andarna en la Trilla", "dest": 4}, {"title": "Sgaeyl", "dest": 4}, {"title": "Teine", "dest": 4}, {"title": "Marbh", "dest": 4}, {"title": "Cath", "dest": 4}, {"title": "Feirge", "dest": 4}, {"title": "Aotrom", "dest": 4}, {"title": "Sliseag", "dest": 4}, {"title": "Deigh", "dest": 4}, {"title": "Glane", "dest": 4}, {"title": "Chradh", "dest": 4}, {"title": "Cuir", "dest": 4}, {"title": "Thoirt", "dest": 4}, {"title": "Molvic", "dest": 4}, {"title": "Cruth", "dest": 4}, {"title": "Aimsir", "dest": 4}, {"title": "Codagh", "dest": 4}, {"title": "Baide", "dest": 4}, {"title": "Solas", "dest": 4}, {"title": "Breugan", "dest": 4}, {"title": "Claidh", "dest": 4}, {"title": "Fuil", "dest": 4}, {"title": "Dagolh", "dest": 4}, {"title": "Nuirlach", "dest": 4}, {"title": "Bregh", "dest": 4}, {"title": "Dasyn", "dest": 4}, {"title": "Leothan", "dest": 4}, {"title": "Obras de Rebecca Yarros", "dest": 23}, {"title": "Guías de aficionados", "dest": 24}, {"title": "El día en que un dragón elige", "dest": 25}],
       showDownloadControl: false,
       maxTextureSize: 2400,
       onCreate: () => updatePage(1),
@@ -198,5 +198,6 @@
   <script src="https://cdn.jsdelivr.net/npm/dflip@1.0.0/js/dflip.min.js"></script>
 </body>
 </html>
+
 
 
