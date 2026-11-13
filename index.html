@@ -37,8 +37,8 @@
     main { position: relative; }
     main:has(#df_book_page_number) .loading-info { display: none; }
     #page-status { position: absolute; z-index: 9; top: .6rem; left: 50%; transform: translateX(-50%); margin: 0; padding: .4rem .75rem; border-radius: .25rem; background: #191714; pointer-events: none; white-space: nowrap; }
-    @media (hover: hover) and (pointer: fine) { #tairn-theme { display: none; } }
-    #tairn-theme { position: absolute; z-index: 12; min-height: 36px; }
+    @media (hover: hover) and (pointer: fine) { #tairn-theme:not(:focus-visible) { opacity: 0; } }
+    #tairn-theme { touch-action: manipulation; position: absolute; z-index: 12; min-height: 36px; }
   </style>
 </head>
 <body>
@@ -215,7 +215,7 @@
     let pointerOnTairn = false;
     let hoverTimer;
     let activeSpread;
-    let tairnBounds;
+
 
     function stopTheme() {
       clearTimeout(hoverTimer);
@@ -236,7 +236,6 @@
       const single = Boolean(activeSpread?.viewer?.isSingle);
       const show = canvas && (page === tairnPage || (!single && page === tairnPage + 1));
       if (!show) {
-        tairnBounds = undefined;
         themeButton.hidden = true;
         pointerOnTairn = false;
         stopTheme();
@@ -248,27 +247,31 @@
       const height = width / .704;
       const left = stage.left + stage.width / 2 - width * (single ? .5 : 1);
       const top = stage.top + (stage.height - 40 - height) / 2;
-      tairnBounds = { left: left + width * .16, right: left + width * .43,
-        top: top + height * .21, bottom: top + height * .40 };
-      themeButton.style.left = Math.max(4, left + width * .59 - origin.left) + 'px';
-      themeButton.style.top = Math.max(4, top + height * .08 - origin.top) + 'px';
+      themeButton.style.left = (left + width * .125 - origin.left) + 'px';
+      themeButton.style.top = (top + height * .21 - origin.top) + 'px';
+      themeButton.style.width = width * .28 + 'px';
+      themeButton.style.height = height * .19 + 'px';
       themeButton.hidden = false;
     }
 
-    themeButton.addEventListener('click', () => {
+    themeButton.addEventListener('click', event => {
+      event.stopPropagation();
+      clearTimeout(hoverTimer);
       if (theme.paused) playTheme();
       else stopTheme();
     });
     theme.addEventListener('ended', stopTheme);
-    book.addEventListener('pointermove', event => {
-      if (event.pointerType !== 'mouse' || !tairnBounds) return;
-      const { left, right, top, bottom } = tairnBounds;
-      const inside = event.clientX >= left && event.clientX <= right &&
-        event.clientY >= top && event.clientY <= bottom;
-      if (inside === pointerOnTairn) return;
-      pointerOnTairn = inside;
-      if (!inside) stopTheme();
-      else if (musicEnabled && theme.paused) hoverTimer = setTimeout(playTheme, 180);
+    themeButton.addEventListener('pointerdown', event => event.stopPropagation());
+    themeButton.addEventListener('pointerup', event => event.stopPropagation());
+    themeButton.addEventListener('pointerenter', event => {
+      if (event.pointerType !== 'mouse') return;
+      pointerOnTairn = true;
+      if (musicEnabled && theme.paused) hoverTimer = setTimeout(playTheme, 120);
+    });
+    themeButton.addEventListener('pointerleave', event => {
+      if (event.pointerType !== 'mouse') return;
+      pointerOnTairn = false;
+      stopTheme();
     });
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
