@@ -37,6 +37,7 @@
     main { position: relative; }
     main:has(#df_book_page_number) .loading-info { display: none; }
     #page-status { position: absolute; z-index: 9; top: .6rem; left: 50%; transform: translateX(-50%); margin: 0; padding: .4rem .75rem; border-radius: .25rem; background: #191714; pointer-events: none; white-space: nowrap; }
+    @media (hover: hover) and (pointer: fine) { #tairn-theme { display: none; } }
     #tairn-theme { position: absolute; z-index: 12; min-height: 36px; }
   </style>
 </head>
@@ -49,6 +50,7 @@
         <summary class="control">Menú</summary>
         <div class="panel">
           <button class="control" id="fullscreen-book" type="button" disabled>Pantalla completa</button>
+          <button class="control" id="enable-music" type="button" aria-pressed="false">Activar música de las fichas</button>
           <button class="control" id="download-pdf" type="button">Descargar PDF original</button>
           <p id="pdf-status" role="status"></p>
           <details class="rights" id="aviso-editorial">
@@ -186,7 +188,30 @@
     const theme = document.querySelector('#tairn-audio');
     const themeButton = document.querySelector('#tairn-theme');
     book.append(themeButton);
+    const musicToggle = document.querySelector('#enable-music');
     let musicEnabled = false;
+    musicToggle.addEventListener('click', async () => {
+      if (musicEnabled) {
+        musicEnabled = false;
+        stopTheme();
+      } else {
+        theme.muted = true;
+        try {
+          await theme.play();
+          theme.pause();
+          theme.currentTime = 0;
+          musicEnabled = true;
+        } catch {
+          musicToggle.textContent = 'Reintentar activar música';
+          return;
+        } finally {
+          theme.muted = false;
+        }
+      }
+      musicToggle.setAttribute('aria-pressed', String(musicEnabled));
+      musicToggle.textContent = musicEnabled ? 'Desactivar música de las fichas' : 'Activar música de las fichas';
+      menu.open = false;
+    });
     let pointerOnTairn = false;
     let hoverTimer;
     let activeSpread;
@@ -200,7 +225,6 @@
 
     function playTheme() {
       theme.play().then(() => {
-        musicEnabled = true;
         themeButton.setAttribute('aria-pressed', String(!theme.paused));
       }).catch(() => themeButton.setAttribute('aria-pressed', 'false'));
     }
@@ -224,8 +248,8 @@
       const height = width / .704;
       const left = stage.left + stage.width / 2 - width * (single ? .5 : 1);
       const top = stage.top + (stage.height - 40 - height) / 2;
-      tairnBounds = { left: left + width * .08, right: left + width * .92,
-        top: top + height * .08, bottom: top + height * .49 };
+      tairnBounds = { left: left + width * .16, right: left + width * .43,
+        top: top + height * .21, bottom: top + height * .40 };
       themeButton.style.left = Math.max(4, left + width * .59 - origin.left) + 'px';
       themeButton.style.top = Math.max(4, top + height * .08 - origin.top) + 'px';
       themeButton.hidden = false;
@@ -245,6 +269,12 @@
       pointerOnTairn = inside;
       if (!inside) stopTheme();
       else if (musicEnabled && theme.paused) hoverTimer = setTimeout(playTheme, 180);
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        pointerOnTairn = false;
+        stopTheme();
+      }
     });
     book.addEventListener('pointerleave', () => {
       if (pointerOnTairn) stopTheme();
@@ -277,6 +307,7 @@
   <script src="https://cdn.jsdelivr.net/npm/dflip@1.0.0/js/dflip.min.js"></script>
 </body>
 </html>
+
 
 
 
