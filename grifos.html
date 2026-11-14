@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cuaderno de grifos y voladores</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dflip@1.0.0/css/dflip.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dflip@1.0.0/css/themify-icons.min.css">
+  <style>
+    :root { color-scheme: dark; --ink: #f5ebd9; --muted: #cbbca5; --gold: #e8bf7e; --line: #4b3d2d; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #151310; color: var(--ink); font: 1rem system-ui, sans-serif; }
+    a { color: var(--gold); text-underline-offset: .2em; }
+    button, summary { font: inherit; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: .6rem; min-height: 52px; padding: .35rem clamp(.55rem, 2vw, 1.3rem); border-bottom: 1px solid var(--line); background: #201b16; position: relative; z-index: 20; }
+    h1 { margin: 0; font: 500 clamp(.95rem, 2.5vw, 1.5rem) Georgia, serif; }
+    .tools { display: flex; align-items: center; gap: .4rem; flex: 0 0 auto; }
+    .control { color: var(--ink); background: #2e261d; border: 1px solid var(--line); border-radius: .45rem; padding: .4rem .65rem; cursor: pointer; font-size: .875rem; white-space: nowrap; }
+    .control:hover, .control:focus-visible { border-color: var(--gold); }
+    .control:disabled { opacity: .55; cursor: wait; }
+    .menu { position: relative; }
+    .menu > summary { list-style: none; }
+    .menu > summary::-webkit-details-marker { display: none; }
+    .menu > summary::after { content: ' ▾'; color: var(--gold); }
+    .menu[open] > summary::after { content: ' ▴'; }
+    .panel { position: absolute; top: calc(100% + .5rem); right: 0; width: min(26rem, calc(100vw - 1.1rem)); max-height: calc(100dvh - 65px); overflow: auto; background: #241e18; border: 1px solid var(--line); border-radius: .65rem; padding: .85rem; box-shadow: 0 12px 32px #0008; }
+    .panel button { display: block; width: 100%; text-align: left; }
+    .panel button + button { margin-top: .4rem; }
+    .rights { margin-top: .75rem; padding-top: .65rem; border-top: 1px solid var(--line); line-height: 1.5; font-size: .875rem; }
+    .rights summary { cursor: pointer; color: var(--gold); }
+    .rights p, .credit { color: var(--muted); }
+    .credit, #pdf-status { font-size: .8rem; }
+    #pdf-status:empty { display: none; }
+    main { position: relative; }
+  
+    .panel a { display: block; margin-bottom: .4rem; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Cuaderno de grifos y voladores</h1>
+    <details class="menu">
+      <summary class="control">Menú</summary>
+      <nav class="panel" aria-label="Biblioteca">
+        <a class="control" href="./">Compendio de los Dragones</a>
+        <a class="control" href="./cuaderno-de-grifos-y-voladores.pdf">Abrir PDF original</a>
+      </nav>
+    </details>
+  </header>
+  <main aria-label="Lector del cuaderno">
+    <div class="_df_book" id="cuaderno" source="./cuaderno-de-grifos-y-voladores.pdf" webgl="true" backgroundcolor="#191613"></div>
+    <noscript><a href="./cuaderno-de-grifos-y-voladores.pdf">Abrir el cuaderno en PDF</a></noscript>
+  </main>
+  <script>
+    var option_cuaderno = {
+      height: Math.max(320, Math.floor(window.innerHeight - document.querySelector('.topbar').getBoundingClientRect().height)),
+      text: { previousPage: 'Página anterior', nextPage: 'Página siguiente', toggleFullscreen: 'Pantalla completa' }
+    };
+  </script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dflip@1.0.0/js/dflip.min.js"></script>
+</body>
+</html>
