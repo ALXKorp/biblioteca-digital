@@ -37,8 +37,8 @@
     main { position: relative; }
     main:has(#df_book_page_number) .loading-info { display: none; }
     #page-status { position: absolute; z-index: 9; top: .6rem; left: 50%; transform: translateX(-50%); margin: 0; padding: .4rem .75rem; border-radius: .25rem; background: #191714; pointer-events: none; white-space: nowrap; }
-    @media (hover: hover) and (pointer: fine) { #tairn-theme:not(:focus-visible) { opacity: 0; } }
-    #tairn-theme { touch-action: manipulation; position: absolute; z-index: 12; min-height: 36px; }
+    @media (hover: hover) and (pointer: fine) { .dragon-theme:not(:focus-visible) { opacity: 0; } }
+    .dragon-theme { touch-action: manipulation; position: absolute; z-index: 12; min-height: 36px; }
   </style>
 </head>
 <body>
@@ -69,7 +69,8 @@
     <p id="page-status" role="status" hidden></p>
     <div class="_df_book" id="compendio" webgl="true" backgroundcolor="#191613"></div>
     <audio id="tairn-audio" src="./tairn.mp3" preload="none"></audio>
-    <button id="tairn-theme" class="control" type="button" hidden aria-label="Escuchar tema de Tairn" aria-pressed="false">♫ Tairn</button>
+    <button id="tairn-theme" class="control dragon-theme" type="button" hidden aria-label="Escuchar tema de Tairn" aria-pressed="false">♫ Tairn</button>
+    <button id="cover-theme" class="control dragon-theme" type="button" hidden aria-label="Escuchar música de portada" aria-pressed="false">♫ Portada</button>
     <noscript>Activa JavaScript para usar el visor y vuelve a cargar la página.</noscript>
   </main>
   <script>
@@ -184,17 +185,42 @@
       }).catch(() => {});
     }
 
-    const tairnPage = 8;
     const theme = document.querySelector('#tairn-audio');
-    const themeButton = document.querySelector('#tairn-theme');
-    book.append(themeButton);
     const musicToggle = document.querySelector('#enable-music');
+    const themes = [
+      { page: 1, button: document.querySelector('#cover-theme'), file: './intro.m4a', box: [.08, .37, .84, .43] },
+      { page: 8, button: document.querySelector('#tairn-theme'), file: './tairn.mp3', box: [.125, .21, .28, .19] }
+    ];
     let musicEnabled = false;
+    let activeSpread;
+    let playing;
+    let hoverTimer;
+
+    function stopTheme() {
+      clearTimeout(hoverTimer);
+      theme.pause();
+      playing?.button.setAttribute('aria-pressed', 'false');
+      playing = undefined;
+    }
+
+    function playTheme(track) {
+      stopTheme();
+      if (theme.getAttribute('src') !== track.file) theme.src = track.file;
+      playing = track;
+      theme.play().then(() => {
+        if (playing === track) track.button.setAttribute('aria-pressed', 'true');
+      }).catch(() => {
+        if (playing === track && theme.paused) stopTheme();
+      });
+    }
+
     musicToggle.addEventListener('click', async () => {
       if (musicEnabled) {
         musicEnabled = false;
         stopTheme();
       } else {
+        stopTheme();
+        musicToggle.disabled = true;
         theme.muted = true;
         try {
           await theme.play();
@@ -206,82 +232,70 @@
           return;
         } finally {
           theme.muted = false;
+          musicToggle.disabled = false;
         }
       }
       musicToggle.setAttribute('aria-pressed', String(musicEnabled));
       musicToggle.textContent = musicEnabled ? 'Desactivar música de las fichas' : 'Activar música de las fichas';
       menu.open = false;
     });
-    let pointerOnTairn = false;
-    let hoverTimer;
-    let activeSpread;
-
-
-    function stopTheme() {
-      clearTimeout(hoverTimer);
-      theme.pause();
-      themeButton.setAttribute('aria-pressed', 'false');
-    }
-
-    function playTheme() {
-      theme.play().then(() => {
-        themeButton.setAttribute('aria-pressed', String(!theme.paused));
-      }).catch(() => themeButton.setAttribute('aria-pressed', 'false'));
-    }
 
     function positionTheme() {
       const canvas = book.querySelector('.df-3dcanvas') || book.querySelector('.df-viewer');
-      const field = book.querySelector('#df_book_page_number');
-      const page = Number(field?.value);
+      const page = Number(book.querySelector('#df_book_page_number')?.value);
       const single = Boolean(activeSpread?.viewer?.isSingle);
-      const show = canvas && (page === tairnPage || (!single && page === tairnPage + 1));
-      if (!show) {
-        themeButton.hidden = true;
-        pointerOnTairn = false;
-        stopTheme();
-        return;
-      }
+      if (!canvas) return;
       const stage = canvas.getBoundingClientRect();
       const origin = book.getBoundingClientRect();
       const width = Math.min(stage.width / (single ? 1 : 2), (stage.height - 100) * .704);
       const height = width / .704;
-      const left = stage.left + stage.width / 2 - width * (single ? .5 : 1);
-      const top = stage.top + (stage.height - 40 - height) / 2;
-      themeButton.style.left = (left + width * .125 - origin.left) + 'px';
-      themeButton.style.top = (top + height * .21 - origin.top) + 'px';
-      themeButton.style.width = width * .28 + 'px';
-      themeButton.style.height = height * .19 + 'px';
-      themeButton.hidden = false;
+      for (const track of themes) {
+        const cover = track.page === 1;
+        const visible = page === track.page || (!cover && !single && page === track.page + 1);
+        track.button.hidden = !visible;
+        if (!visible) {
+          if (playing === track) stopTheme();
+          continue;
+        }
+        const left = stage.left + stage.width / 2 - width * (cover || single ? .5 : 1);
+        const top = stage.top + (stage.height - 40 - height) / 2;
+        const [x, y, w, h] = track.box;
+        Object.assign(track.button.style, {
+          left: left + width * x - origin.left + 'px',
+          top: top + height * y - origin.top + 'px',
+          width: width * w + 'px',
+          height: height * h + 'px'
+        });
+      }
     }
 
-    themeButton.addEventListener('click', event => {
-      event.stopPropagation();
-      clearTimeout(hoverTimer);
-      if (theme.paused) playTheme();
-      else stopTheme();
-    });
-    theme.addEventListener('ended', stopTheme);
-    themeButton.addEventListener('pointerdown', event => event.stopPropagation());
-    themeButton.addEventListener('pointerup', event => event.stopPropagation());
-    themeButton.addEventListener('pointerenter', event => {
-      if (event.pointerType !== 'mouse') return;
-      pointerOnTairn = true;
-      if (musicEnabled && theme.paused) hoverTimer = setTimeout(playTheme, 120);
-    });
-    themeButton.addEventListener('pointerleave', event => {
-      if (event.pointerType !== 'mouse') return;
-      pointerOnTairn = false;
-      stopTheme();
-    });
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        pointerOnTairn = false;
-        stopTheme();
+    for (const track of themes) {
+      const button = track.button;
+      book.append(button);
+      for (const eventName of ['pointerdown', 'pointerup']) {
+        button.addEventListener(eventName, event => event.stopPropagation());
       }
-    });
-    book.addEventListener('pointerleave', () => {
-      if (pointerOnTairn) stopTheme();
-      pointerOnTairn = false;
+      button.addEventListener('click', event => {
+        event.stopPropagation();
+        if (playing === track && !theme.paused) stopTheme();
+        else playTheme(track);
+      });
+      button.addEventListener('pointerenter', event => {
+        if (event.pointerType === 'mouse' && musicEnabled && playing !== track) {
+          hoverTimer = setTimeout(() => {
+            if (!button.hidden) playTheme(track);
+          }, 120);
+        }
+      });
+      button.addEventListener('pointerleave', event => {
+        if (event.pointerType !== 'mouse') return;
+        clearTimeout(hoverTimer);
+        if (playing === track) stopTheme();
+      });
+    }
+    theme.addEventListener('ended', stopTheme);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopTheme();
     });
     new ResizeObserver(positionTheme).observe(book);
     new MutationObserver(positionTheme).observe(book, { childList: true, subtree: true });
@@ -293,10 +307,13 @@
       outline: [{"title": "Compendio", "dest": 1}, {"title": "Cómo leer el compendio", "dest": 2}, {"title": "Contenido", "dest": 3}, {"title": "Antes de la Trilla", "dest": 3}, {"title": "Dragones citados por su nombre", "dest": 3}, {"title": "Dragones sin nombre conocido", "dest": 3}, {"title": "Índice de dragones", "dest": 3}, {"title": "Tairn", "dest": 8}, {"title": "Andarna", "dest": 4}, {"title": "Andarna en la Trilla", "dest": 4}, {"title": "Sgaeyl", "dest": 4}, {"title": "Teine", "dest": 4}, {"title": "Marbh", "dest": 4}, {"title": "Cath", "dest": 4}, {"title": "Feirge", "dest": 4}, {"title": "Aotrom", "dest": 4}, {"title": "Sliseag", "dest": 4}, {"title": "Deigh", "dest": 4}, {"title": "Glane", "dest": 4}, {"title": "Chradh", "dest": 4}, {"title": "Cuir", "dest": 4}, {"title": "Thoirt", "dest": 4}, {"title": "Molvic", "dest": 4}, {"title": "Cruth", "dest": 4}, {"title": "Aimsir", "dest": 4}, {"title": "Codagh", "dest": 4}, {"title": "Baide", "dest": 4}, {"title": "Solas", "dest": 4}, {"title": "Breugan", "dest": 4}, {"title": "Claidh", "dest": 4}, {"title": "Fuil", "dest": 4}, {"title": "Dagolh", "dest": 4}, {"title": "Nuirlach", "dest": 4}, {"title": "Bregh", "dest": 4}, {"title": "Dasyn", "dest": 4}, {"title": "Leothan", "dest": 4}, {"title": "Obras de Rebecca Yarros", "dest": 23}, {"title": "Guías de aficionados", "dest": 24}, {"title": "El día en que un dragón elige", "dest": 25}],
       showDownloadControl: false,
       maxTextureSize: 2400,
-      onCreate: () => updatePage(1),
+      onCreate: app => {
+        activeSpread = app;
+        updatePage(1);
+        requestAnimationFrame(positionTheme);
+      },
       onFlip: app => {
         activeSpread = app;
-        pointerOnTairn = false;
         stopTheme();
         requestAnimationFrame(positionTheme);
         const field = document.querySelector('#df_book_page_number');
