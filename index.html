@@ -70,6 +70,7 @@
     <div class="_df_book" id="compendio" webgl="true" backgroundcolor="#191613"></div>
     <audio id="tairn-audio" src="./tairn.mp3" preload="none"></audio>
     <button id="tairn-theme" class="control dragon-theme" type="button" hidden aria-label="Escuchar tema de Tairn" aria-pressed="false">♫ Tairn</button>
+    <button id="feirge-theme" class="control dragon-theme" type="button" hidden aria-label="Escuchar tema de Rhiannon y Feirge" aria-pressed="false">♫ Feirge</button>
     <button id="sgaeyl-theme" class="control dragon-theme" type="button" hidden aria-label="Escuchar tema de Xaden y Sgaeyl" aria-pressed="false">♫ Sgaeyl</button>
     <button id="cover-theme" class="control dragon-theme" type="button" hidden aria-label="Escuchar música de portada" aria-pressed="false">♫ Portada</button>
     <noscript>Activa JavaScript para usar el visor y vuelve a cargar la página.</noscript>
@@ -191,7 +192,8 @@
     const themes = [
       { page: 1, button: document.querySelector('#cover-theme'), file: './intro.m4a', box: [.08, .37, .84, .43] },
       { page: 7, button: document.querySelector('#sgaeyl-theme'), file: './xaden.m4a', box: [.12, .19, .29, .23] },
-      { page: 8, button: document.querySelector('#tairn-theme'), file: './tairn.mp3', box: [.125, .21, .28, .19] }
+      { page: 8, button: document.querySelector('#tairn-theme'), file: './tairn.mp3', box: [.125, .21, .28, .19] },
+      { page: 8, button: document.querySelector('#feirge-theme'), file: './rhianon.mp3', box: [.125, .60, .28, .20] }
     ];
     let musicEnabled = false;
     let activeSpread;
@@ -307,7 +309,7 @@
     var option_compendio = {
       source: pages,
       height: viewerHeight(),
-      outline: [{"title": "Compendio", "dest": 1}, {"title": "Cómo leer el compendio", "dest": 2}, {"title": "Contenido", "dest": 3}, {"title": "Antes de la Trilla", "dest": 3}, {"title": "Dragones citados por su nombre", "dest": 3}, {"title": "Dragones sin nombre conocido", "dest": 3}, {"title": "Índice de dragones", "dest": 3}, {"title": "Tairn", "dest": 8}, {"title": "Andarna", "dest": 4}, {"title": "Andarna en la Trilla", "dest": 4}, {"title": "Sgaeyl", "dest": 7}, {"title": "Teine", "dest": 4}, {"title": "Marbh", "dest": 4}, {"title": "Cath", "dest": 4}, {"title": "Feirge", "dest": 4}, {"title": "Aotrom", "dest": 4}, {"title": "Sliseag", "dest": 4}, {"title": "Deigh", "dest": 4}, {"title": "Glane", "dest": 4}, {"title": "Chradh", "dest": 4}, {"title": "Cuir", "dest": 4}, {"title": "Thoirt", "dest": 4}, {"title": "Molvic", "dest": 4}, {"title": "Cruth", "dest": 4}, {"title": "Aimsir", "dest": 4}, {"title": "Codagh", "dest": 4}, {"title": "Baide", "dest": 4}, {"title": "Solas", "dest": 4}, {"title": "Breugan", "dest": 4}, {"title": "Claidh", "dest": 4}, {"title": "Fuil", "dest": 4}, {"title": "Dagolh", "dest": 4}, {"title": "Nuirlach", "dest": 4}, {"title": "Bregh", "dest": 4}, {"title": "Dasyn", "dest": 4}, {"title": "Leothan", "dest": 4}, {"title": "Obras de Rebecca Yarros", "dest": 23}, {"title": "Guías de aficionados", "dest": 24}, {"title": "El día en que un dragón elige", "dest": 25}],
+      outline: [{"title": "Compendio", "dest": 1}, {"title": "Cómo leer el compendio", "dest": 2}, {"title": "Contenido", "dest": 3}, {"title": "Antes de la Trilla", "dest": 3}, {"title": "Dragones citados por su nombre", "dest": 3}, {"title": "Dragones sin nombre conocido", "dest": 3}, {"title": "Índice de dragones", "dest": 3}, {"title": "Tairn", "dest": 8}, {"title": "Andarna", "dest": 4}, {"title": "Andarna en la Trilla", "dest": 4}, {"title": "Sgaeyl", "dest": 7}, {"title": "Teine", "dest": 4}, {"title": "Marbh", "dest": 4}, {"title": "Cath", "dest": 4}, {"title": "Feirge", "dest": 8}, {"title": "Aotrom", "dest": 4}, {"title": "Sliseag", "dest": 4}, {"title": "Deigh", "dest": 4}, {"title": "Glane", "dest": 4}, {"title": "Chradh", "dest": 4}, {"title": "Cuir", "dest": 4}, {"title": "Thoirt", "dest": 4}, {"title": "Molvic", "dest": 4}, {"title": "Cruth", "dest": 4}, {"title": "Aimsir", "dest": 4}, {"title": "Codagh", "dest": 4}, {"title": "Baide", "dest": 4}, {"title": "Solas", "dest": 4}, {"title": "Breugan", "dest": 4}, {"title": "Claidh", "dest": 4}, {"title": "Fuil", "dest": 4}, {"title": "Dagolh", "dest": 4}, {"title": "Nuirlach", "dest": 4}, {"title": "Bregh", "dest": 4}, {"title": "Dasyn", "dest": 4}, {"title": "Leothan", "dest": 4}, {"title": "Obras de Rebecca Yarros", "dest": 23}, {"title": "Guías de aficionados", "dest": 24}, {"title": "El día en que un dragón elige", "dest": 25}],
       showDownloadControl: false,
       maxTextureSize: 2400,
       onCreate: app => {
