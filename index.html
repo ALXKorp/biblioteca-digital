@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Compendio de los Dragones</title>
-  <link rel="preload" as="image" href="./compendio-b3d7769d60-01.webp">
-  <link rel="preload" as="image" href="./compendio-b3d7769d60-02.webp">
-  <link rel="preload" as="image" href="./compendio-b3d7769d60-03.webp">
+  <link rel="preload" as="image" href="./libros/dragones/paginas/compendio-b3d7769d60-01.webp">
+  <link rel="preload" as="image" href="./libros/dragones/paginas/compendio-b3d7769d60-02.webp">
+  <link rel="preload" as="image" href="./libros/dragones/paginas/compendio-b3d7769d60-03.webp">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dflip@1.0.0/css/dflip.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dflip@1.0.0/css/themify-icons.min.css">
   <style>
@@ -70,7 +70,7 @@
   <main aria-label="Lector del compendio">
     <p id="page-status" role="status" hidden></p>
     <div class="_df_book" id="compendio" webgl="true" backgroundcolor="#191613"></div>
-    <audio id="tairn-audio" src="./tairn.mp3" preload="none"></audio>
+    <audio id="tairn-audio" src="./libros/dragones/audio/tairn.mp3" preload="none"></audio>
     <button id="tairn-theme" class="control dragon-theme" type="button" hidden aria-label="Escuchar tema de Tairn" aria-pressed="false">♫ Tairn</button>
     <button id="feirge-theme" class="control dragon-theme" type="button" hidden aria-label="Escuchar tema de Rhiannon y Feirge" aria-pressed="false">♫ Feirge</button>
     <button id="deigh-theme" class="control dragon-theme" type="button" hidden aria-label="Escuchar tema de Liam y Deigh" aria-pressed="false">♫ Deigh</button>
@@ -119,7 +119,7 @@
       pdfStatus.textContent = 'Preparando PDF…';
       try {
         const parts = await Promise.all([1, 2, 3, 4, 5, 6].map(async part => {
-          const response = await fetch('./compendio-b3d7769d60-pdf-parte-' + part + '.bin');
+          const response = await fetch('./libros/dragones/pdf/compendio-b3d7769d60-pdf-parte-' + part + '.bin');
           if (!response.ok) throw new Error('No se pudo descargar el PDF.');
           return response.arrayBuffer();
         }));
@@ -139,7 +139,7 @@
     });
 
     const pages = Array.from({ length: 25 }, (_, i) =>
-      './compendio-b3d7769d60-' + String(i + 1).padStart(2, '0') + '.webp'
+      './libros/dragones/paginas/compendio-b3d7769d60-' + String(i + 1).padStart(2, '0') + '.webp'
     );
     const requests = new Map();
     const pageStatus = document.querySelector('#page-status');
@@ -193,11 +193,11 @@
     const theme = document.querySelector('#tairn-audio');
     const musicToggle = document.querySelector('#enable-music');
     const themes = [
-      { page: 1, button: document.querySelector('#cover-theme'), file: './intro.m4a', box: [.08, .37, .84, .43] },
-      { page: 7, button: document.querySelector('#sgaeyl-theme'), file: './xaden.m4a', box: [.12, .19, .29, .23] },
-      { page: 8, button: document.querySelector('#tairn-theme'), file: './tairn.mp3', box: [.125, .21, .28, .19] },
-      { page: 8, button: document.querySelector('#feirge-theme'), file: './rhianon.mp3', box: [.125, .60, .28, .20] },
-      { page: 12, button: document.querySelector('#deigh-theme'), file: './liam.m4a', box: [.125, .21, .28, .19] }
+      { page: 1, button: document.querySelector('#cover-theme'), file: './libros/dragones/audio/intro.m4a', box: [.08, .37, .84, .43] },
+      { page: 7, button: document.querySelector('#sgaeyl-theme'), file: './libros/dragones/audio/xaden.m4a', box: [.12, .19, .29, .23] },
+      { page: 8, button: document.querySelector('#tairn-theme'), file: './libros/dragones/audio/tairn.mp3', volume: 1, box: [.125, .21, .28, .19] },
+      { page: 8, button: document.querySelector('#feirge-theme'), file: './libros/dragones/audio/rhianon.mp3', box: [.125, .60, .28, .20] },
+      { page: 12, button: document.querySelector('#deigh-theme'), file: './libros/dragones/audio/liam.m4a', box: [.125, .21, .28, .19] }
     ];
     let musicEnabled = false;
     let activeSpread;
@@ -214,6 +214,7 @@
     function playTheme(track) {
       stopTheme();
       if (theme.getAttribute('src') !== track.file) theme.src = track.file;
+      theme.volume = track.volume ?? 0.5;
       playing = track;
       theme.play().then(() => {
         if (playing === track) track.button.setAttribute('aria-pressed', 'true');
