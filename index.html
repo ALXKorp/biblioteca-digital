@@ -37,7 +37,8 @@
     main { position: relative; }
     main:has(#df_book_page_number) .loading-info { display: none; }
     #page-status { position: absolute; z-index: 9; top: .6rem; left: 50%; transform: translateX(-50%); margin: 0; padding: .4rem .75rem; border-radius: .25rem; background: #191714; pointer-events: none; white-space: nowrap; }
-    @media (hover: hover) and (pointer: fine) { .dragon-theme:not(:focus-visible) { opacity: 0; } }
+    .dragon-theme:not(:focus-visible) { opacity: 0; }
+    .dragon-theme:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; background: transparent; color: transparent; border-color: transparent; box-shadow: none; }
     .dragon-theme { touch-action: manipulation; position: absolute; z-index: 12; min-height: 36px; }
   </style>
 </head>
