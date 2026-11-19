@@ -37,8 +37,19 @@
     main { position: relative; }
     main:has(#df_book_page_number) .loading-info { display: none; }
     #page-status { position: absolute; z-index: 9; top: .6rem; left: 50%; transform: translateX(-50%); margin: 0; padding: .4rem .75rem; border-radius: .25rem; background: #191714; pointer-events: none; white-space: nowrap; }
-    .dragon-theme:not(:focus-visible) { opacity: 0; }
-    .dragon-theme:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; background: transparent; color: transparent; border-color: transparent; box-shadow: none; }
+    button.control.dragon-theme,
+    button.control.dragon-theme:hover,
+    button.control.dragon-theme:focus,
+    button.control.dragon-theme:active {
+      opacity: 0 !important;
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
+      color: transparent !important;
+      font-size: 0 !important;
+      padding: 0 !important;
+      outline: none !important;
+    }
     .dragon-theme { touch-action: manipulation; position: absolute; z-index: 12; min-height: 36px; }
   </style>
 </head>
@@ -253,7 +264,12 @@
     function positionTheme() {
       const canvas = book.querySelector('.df-3dcanvas') || book.querySelector('.df-viewer');
       const page = Number(book.querySelector('#df_book_page_number')?.value);
-      const single = Boolean(activeSpread?.viewer?.isSingle);
+      const viewer = activeSpread?.viewer;
+      const single = typeof viewer?.isSingle === 'boolean'
+        ? viewer.isSingle
+        : typeof viewer?.isSinglePage === 'function'
+          ? viewer.isSinglePage()
+          : window.matchMedia('(max-width: 767px)').matches;
       if (!canvas) return;
       const stage = canvas.getBoundingClientRect();
       const origin = book.getBoundingClientRect();
@@ -262,7 +278,7 @@
       for (const track of themes) {
         const cover = track.page === 1;
         const spreadStart = track.page - track.page % 2;
-        const visible = page === track.page || (!cover && !single && (page === spreadStart || page === spreadStart + 1));
+        const visible = single || cover ? page === track.page : (page === spreadStart || page === spreadStart + 1);
         track.button.hidden = !visible;
         if (!visible) {
           if (playing === track) stopTheme();
